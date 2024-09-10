@@ -35,7 +35,6 @@ class QueryManager {
     this.alwaysRebroadcast = false,
     DeepEqualsFn? deepEquals,
     bool deduplicatePollers = false,
-    this.requestTimeout = const Duration(seconds: 5),
   }) {
     scheduler = QueryScheduler(
       queryManager: this,
@@ -51,9 +50,6 @@ class QueryManager {
 
   /// Whether to skip deep equality checks in [maybeRebroadcastQueries]
   final bool alwaysRebroadcast;
-
-  /// The timeout for resolving a query
-  final Duration requestTimeout;
 
   QueryScheduler? scheduler;
   static final _oneOffOpId = '0';
@@ -260,7 +256,7 @@ class QueryManager {
 
     try {
       // execute the request through the provided link(s)
-      response = await link.request(request).timeout(this.requestTimeout).first;
+      response = await link.request(request).first;
 
       queryResult = mapFetchResultToQueryResult(
         response,
